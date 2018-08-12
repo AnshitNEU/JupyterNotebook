@@ -51,7 +51,6 @@ RUN conda install --quiet --yes \
     'r-devtools=1.13*' \
     'r-tidyverse=1.1*' \
     'r-shiny=1.0*' \
-    'seaborn=0.9*' \
     'r-rmarkdown=1.8*' \
     'r-forecast=8.2*' \
     'r-rsqlite=2.0*' \
@@ -64,7 +63,8 @@ RUN conda install --quiet --yes \
     'r-htmltools=0.3*' \
     'r-sparklyr=0.7*' \
     'r-htmlwidgets=1.0*' \
-    'r-hexbin=1.27*' && \
+    'r-hexbin=1.27*' \
+    'seaborn=0.9*' $$ \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
@@ -78,7 +78,7 @@ RUN conda install --quiet --yes \
 # taking effect properly on the .local folder in the jovyan home dir.
 RUN julia -e 'Pkg.init()' && \
     julia -e 'Pkg.update()' && \
-    (test $TEST_ONLY_BUILD || julia -e 'Pkg.add("HDF5")') && \
+    # (test $TEST_ONLY_BUILD || julia -e 'Pkg.add("HDF5")') && \
     julia -e 'Pkg.add("Gadfly")' && \
     julia -e 'Pkg.add("RDatasets")' && \
     julia -e 'Pkg.add("IJulia")' && \
