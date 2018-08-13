@@ -64,7 +64,7 @@ RUN conda install --quiet --yes \
     'r-sparklyr=0.7*' \
     'r-htmlwidgets=1.0*' \
     'r-hexbin=1.27*' \
-    'seaborn=0.9*' $$ \
+    'seaborn=0.9*' && \
     conda clean -tipsy && \
     fix-permissions $CONDA_DIR && \
     fix-permissions /home/$NB_USER
@@ -90,10 +90,15 @@ RUN julia -e 'Pkg.init()' && \
     rm -rf $HOME/.local && \
     fix-permissions $JULIA_PKGDIR $CONDA_DIR/share/jupyter
     
+USER root    
+
+# make /bin/sh symlink to bash instead of dash:
+RUN echo "dash dash/sh boolean false" | debconf-set-selections
+RUN DEBIAN_FRONTEND=noninteractive dpkg-reconfigure dash
+
 # Installing Git, Python3 and Using Anaconda
 RUN apt-get update && \
     apt-get install git -y && \
-    cd $HOME && \
     git clone https://github.com/ageron/handson-ml.git && \
     cd handson-ml && \
     apt-get install python3 -y && \
@@ -102,7 +107,8 @@ RUN apt-get update && \
     conda install -n mlbook -c conda-forge tensorflow && \
     conda install -n mlbook -c conda-forge jupyter_contrib_nbextensions
 
+USER $NB_UID
 # Starting Jupyter Notebooks
-RUN jupyter contrib nbextension install --user && \
-    jupyter nbextension enable toc2/main && \
-    jupyter notebook
+# RUN jupyter contrib nbextension install --user && \
+#    jupyter nbextension enable toc2/main && \
+RUN    jupyter notebook
