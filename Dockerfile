@@ -77,8 +77,23 @@ RUN conda install --quiet --yes \
 # Install Python 3 packages
 # Remove pyqt and qt pulled in for matplotlib since we're only ever going to
 # use notebook-friendly backends in these images
-RUN apt-get install python-numpy python-scipy python-matplotlib ipython ipython-notebook python-pandas python-sympy python-nose
-RUN conda install seaborn
+RUN conda install --quiet --yes \
+    'conda-forge::blas=*=openblas' \
+    'ipywidgets=7.2*' \
+    'pandas=0.23*' \
+    'numexpr=2.6*' \
+    'matplotlib=2.2*' \
+    'scipy=1.1*' \
+    'seaborn=0.9*' \
+    'sympy=1.1*' \
+    'statsmodels=0.9*' \
+    'xlrd'  && \
+    conda remove --quiet --yes --force qt pyqt && \
+    conda clean -tipsy && \
+    fix-permissions $CONDA_DIR && \
+    fix-permissions /home/$NB_USER
+    
+# RUN conda install seaborn
 
 # Add Julia packages. Only add HDF5 if this is not a test-only build since
 # it takes roughly half the entire build time of all of the images on Travis
