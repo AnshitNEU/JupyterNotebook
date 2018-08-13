@@ -111,4 +111,4 @@ USER $NB_UID
 # Starting Jupyter Notebooks
 # RUN jupyter contrib nbextension install --user && \
 #    jupyter nbextension enable toc2/main && \
-RUN    jupyter notebook
+RUN jupyter notebook
