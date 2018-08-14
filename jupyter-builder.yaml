@@ -1,0 +1,24 @@
+---
+apiVersion: v1
+kind: ReplicationController
+metadata:
+  name: jupyter-notebooks
+spec:
+  replicas: 1
+  selector:
+    app: jupyter-notebooks
+  template:
+    metadata:
+      labels:
+        app: jupyter-notebooks
+      name: jupyter-notebooks
+    spec:
+      containers:
+        - 
+          image: "anshit92/jupyter:2.0"
+          imagePullPolicy: Always
+          name: jupyter-notebooks
+          ports:
+            - 
+              containerPort: 8888
+              hostPort: 8888
