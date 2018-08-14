@@ -1,0 +1,35 @@
+sudo apt-get update
+sudo apt-get install -qy docker.io
+sudo apt-get update
+swapoff -a
+sudo apt-get install -y apt-transport-https
+curl -s https://packages.cloud.google.com/apt/doc/apt-key.gpg | sudo apt-key add -
+cat <<EOF >/etc/apt/sources.list.d/kubernetes.list
+deb http://apt.kubernetes.io/ kubernetes-xenial main
+EOF
+apt-get update
+apt-get install -y kubelet kubeadm kubectl
+sudo kubeadm init --pod-network-cidr=10.244.0.0/16 --apiserver-advertise-address=<master ip-addr>
+# exit from sudo be a regular user
+sudo cp /etc/kubernetes/admin.conf $HOME/
+sudo chown $(id -u):$(id -g) $HOME/admin.conf
+export KUBECONFIG=$HOME/admin.conf
+echo "export KUBECONFIG=$HOME/admin.conf" | tee -a ~/.bashrc
+
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/kube-flannel.yml
+kubectl apply -f https://raw.githubusercontent.com/coreos/flannel/master/Documentation/k8s-manifests/kube-flannel-rbac.yml
+
+# ON NODE
+kubeadm join --token < >
+
+#important commands
+kubectl create -f <replication controller yaml>
+kubectl get pods
+kubectl het nodes
+kubectl describe <pod name>
+kubectl run hello-world --replicas=5 --labels="run=load-balancer-example" --image=gcr.io/google-samples/node-hello:1.0  --port=8080
+
+kubectl exec -it <pod name> /bin/bash
+
+#inside pod to get token
+jupyter notebook list
